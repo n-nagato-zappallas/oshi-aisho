@@ -1,11 +1,9 @@
 <?php
 
-ini_set('display_errors', 1);
-
 /**
  * 特集ごとのコントローラー
  * 
- *  [%event%]/controller.php			簡単なサイトの場合はBLはここに書いてしまおう
+ *  [%oshi%]/controller.php			簡単なサイトの場合はBLはここに書いてしまおう
  *              └ logic.php			占断ロジック関連
  *              └ index_data.php		indexページの情報＆処理
  *              └ data/[%menu_id%].php	メニュー単位の情報
@@ -29,21 +27,19 @@ if( $self->get('isp') == 11 ) {
 	if( $real_flag ) {
 		$SmartyObj->assign( 'uri_path',			'/cp_v/oshi-aisho_v' );
 		$SmartyObj->assign( 'img_path',			'/cp_v/oshi-aisho_v' );
-		$SmartyObj->assign( 'special_title',	'推し活占い' );
+		$SmartyObj->assign( 'special_title',	'推しとあなたの相性診断' );
 		$SmartyObj->assign( 'meta_keywords',	'推し,推し活,相性,相性占い,リアコ,無料占い' );
 		$SmartyObj->assign( 'meta_description',	'【無料で占えます】推しを好きになったのは必然だった……!?　これは【推しとあなた】の真面目な相性診断◆お互いの持つ性質から2人の結びつき、前世～来世での繋がりまで2人の相性をとことん深掘りしてみませんか？' );
 		$SmartyObj->assign( 'sns_description',	'【無料で占えます】推しを好きになったのは必然だった……!?　これは【推しとあなた】の真面目な相性診断◆お互いの持つ性質から2人の結びつき、前世～来世での繋がりまで2人の相性をとことん深掘りしてみませんか？' );
-		$SmartyObj->assign( 'special_period',	'推し活占い_special_period' );
+		$SmartyObj->assign( 'special_period',	'推しとあなたの相性診断_special_period' );
 	} else {
-		// $SmartyObj->assign( 'uri_path',			'http://web-dev06.ura.pga.jp:8080/cp_v/oshi-aisho_v' );
-		// $SmartyObj->assign( 'img_path',			'http://web-dev06.ura.pga.jp:8080/cp_v/oshi-aisho_v' );
 		$SmartyObj->assign( 'uri_path',			'/cp_v/oshi-aisho_v' );
 		$SmartyObj->assign( 'img_path',			'/cp_v/oshi-aisho_v' );
-		$SmartyObj->assign( 'special_title',	'推し活占い' );
+		$SmartyObj->assign( 'special_title',	'推しとあなたの相性診断' );
 		$SmartyObj->assign( 'meta_keywords',	'推し,推し活,相性,相性占い,リアコ,無料占い' );
 		$SmartyObj->assign( 'meta_description',	'【無料で占えます】推しを好きになったのは必然だった……!?　これは【推しとあなた】の真面目な相性診断◆お互いの持つ性質から2人の結びつき、前世～来世での繋がりまで2人の相性をとことん深掘りしてみませんか？' );
 		$SmartyObj->assign( 'sns_description',	'【無料で占えます】推しを好きになったのは必然だった……!?　これは【推しとあなた】の真面目な相性診断◆お互いの持つ性質から2人の結びつき、前世～来世での繋がりまで2人の相性をとことん深掘りしてみませんか？' );
-		$SmartyObj->assign( 'special_period',	'推し活占い_special_period' );
+		$SmartyObj->assign( 'special_period',	'推しとあなたの相性診断_special_period' );
 	}
 }
 
@@ -59,13 +55,6 @@ if (is_readable($self->get('event') . '/data/' . $self->get('menu_id') . '.php')
 
     $maxIndex = count($min_title_keys);
 }
-
-//// 画像ぱす
-// 'https://honkaku-uranai.jp/cp_zap/event/getters_2023'
-//   ↓
-// 'https://lw6nr4oyej.user-space.cdn.idcfcloud.net/event/getters_2023'
-/** CDN使う場合 **/
-
 
 // $cdn_flag = true;
 $cdn_flag = false; //★開発用
@@ -112,7 +101,7 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 		$self->set('name2_self', $ns .'さん' );
 	}
 	if( $self->get('name_other') == '' ) {
-		$self->set('name2_other', 'あの人' );
+		$self->set('name2_other', '推し' );
 	} else {
 		$no = $self->get('name_other');
 		$no = str_replace( "&amp;",  "&", $no );
@@ -213,15 +202,7 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 
 	// ロジック情報
 	if( $result_flag ) {
-
 		require_once 'logic.php';
-		// レンサ連携
-		// if( $rensa_flag ) {
-		// 	setRensa( 'leon_rsa', $self->get('menu_id'), $free_flag );
-		// }
-		// if( $rensa2_flag ) {
-		// 	setRensa( 'murano_rsa', $self->get('menu_id'), $free_flag );
-		// }
 	}
 	// 【完全無料メニュー】結果ページ
 	if( $allfree_flag ) {
@@ -239,37 +220,27 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 		if (isset($base) && !empty($base)){
 			// 結果テキスト
 			$result_menu = [];
-			// $result_menu[1] = $result_001_01[$base['logic_27constellations_other']]; // 小メニュー1 推しの基本性格（サマリ）
 			$result_menu[1] = get_logic_result('result_001_01', $base['logic_27constellations_other']); // 小メニュー1 推しの基本性格（サマリ）
-			// $result_menu[2] = $result_001_02[$base['logic_27constellations_other']]; // 小メニュー2 推しの基本性格（本文）
 			$result_menu[2] = get_logic_result('result_001_02', $base['logic_27constellations_other']); // 小メニュー2 推しの基本性格（本文）
-			// $result_menu[3] = $result_001_03[$base['logic_27constellations_self']]; // 小メニュー3 あなたの基本性格（サマリ）
 			$result_menu[3] = get_logic_result('result_001_03', $base['logic_27constellations_self']); // 小メニュー3 あなたの基本性格（サマリ）
-			// $result_menu[4] = $result_001_04[$base['logic_27constellations_self']]; // 小メニュー4 あなたの基本性格（本文）
 			$result_menu[4] = get_logic_result('result_001_04', $base['logic_27constellations_self']); // 小メニュー4 あなたの基本性格（本文）
-			// $result_menu[5] = $result_001_05[$base['logic_hihou_self_other']]; // 小メニュー5 あなたと推しの基本相性（サマリ）
 			$result_menu[5] = get_logic_result('result_001_05', $base['logic_hihou_self_other']); // 小メニュー5 あなたと推しの基本相性（サマリ）
-			// $result_menu[6] = $result_001_06[$base['logic_hihou_self_other']]; // 小メニュー6 あなたと推しの基本相性（本文）
 			$result_menu[6] = get_logic_result('result_001_06', $base['logic_hihou_self_other']); // 小メニュー6 あなたと推しの基本相性（本文）
-			// $result_menu[7] = $result_001_07[$base['logic_hihou_self_other']]; // 小メニュー7 あなたと推しの基本相性（結果）
 			$result_menu[7] = get_logic_result('result_001_07', $base['logic_hihou_self_other']); // 小メニュー7 あなたと推しの基本相性（結果）
 			$SmartyObj->assign('result_menu', $result_menu);
 			$SmartyObj->assign( 'base_id_self', $base['logic_27constellations_self'] );
 			$SmartyObj->assign( 'base_id_other', $base['logic_27constellations_other'] );
 			if (isset($base['logic_27constellations_self'])) {
-				// $base_alt_self = $character_base_data[$base['logic_27constellations_self']];
 				$base_alt_self = get_logic_result('character_base_data', $base['logic_27constellations_self']);
 				$SmartyObj->assign( 'base_alt_self', $base_alt_self );
 			}
 			if (isset($base['logic_27constellations_other'])) {
-				// $base_alt_other = $character_base_data[$base['logic_27constellations_other']];
 				$base_alt_other = get_logic_result('character_base_data', $base['logic_27constellations_other']);
 				$SmartyObj->assign( 'base_alt_other', $base_alt_other );
 			}
 			// 自分→相手の三九の秘法(相性×距離) 27pt
 			$SmartyObj->assign( 'logic_hihou_self_other', $base['logic_hihou_self_other'] );
 			if (isset($base['logic_hihou_self_other'])) {
-				// $compatibility_value = $base_sanku[$base['logic_hihou_self_other']];
 				$compatibility_value = get_logic_result('base_sanku', $base['logic_hihou_self_other']);
 				$tens_digit = floor($compatibility_value / 10);  // 10の位
 				$ones_digit = $compatibility_value % 10;         // 1の位
@@ -287,6 +258,7 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 				
 				$next_data =  new menuInfo( $next_id, 'next' );
 				$next_menuData = $next_data->get('menuData');
+
 				// Next メニュー情報
 				$data = array( 'menu_id' => $menu_id );
 				$min_title = array();
@@ -348,17 +320,11 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 				// 自分→相手の三九の秘法 11pt
 				if (isset($base['logic_aisho_self_other']) && isset($base_sanku_aisho_11[$base['logic_aisho_self_other']])) {
 					$SmartyObj->assign( 'logic_aisho_self_other', $base['logic_aisho_self_other'] );
-					// $aisho_love = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_love_point'];
 					$aisho_love = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_love_point');
-					// $aisho_night = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_night_point'];
 					$aisho_night = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_night_point');
-					// $aisho_friend = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_friend_point'];
 					$aisho_friend = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_friend_point');
-					// $aisho_hobby = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_hobby_point'];
 					$aisho_hobby = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_hobby_point');
-					// $aisho_business = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_business_point'];
 					$aisho_business = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_business_point');
-					// $aisho_marriage = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_marriage_point'];
 					$aisho_marriage = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_marriage_point');
 					$SmartyObj->assign( 'aisho_love', $aisho_love );
 					$SmartyObj->assign( 'aisho_night', $aisho_night );
@@ -450,17 +416,11 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 			// 自分→相手の三九の秘法 11pt
 			if (isset($base['logic_aisho_self_other'])) {
 				$SmartyObj->assign( 'logic_aisho_self_other', $base['logic_aisho_self_other'] );
-				// $aisho_love = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_love_point'];
 				$aisho_love = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_love_point');
-				// $aisho_night = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_night_point'];
 				$aisho_night = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_night_point');
-				// $aisho_friend = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_friend_point'];
 				$aisho_friend = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_friend_point');
-				// $aisho_hobby = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_hobby_point'];
 				$aisho_hobby = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_hobby_point');
-				// $aisho_business = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_business_point'];
 				$aisho_business = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_business_point');
-				// $aisho_marriage = $base_sanku_aisho_11[$base['logic_aisho_self_other']]['aisho_marriage_point'];
 				$aisho_marriage = get_logic_result('base_sanku_aisho_11', $base['logic_aisho_self_other'], 'aisho_marriage_point');
 				$SmartyObj->assign( 'aisho_love', $aisho_love );
 				$SmartyObj->assign( 'aisho_night', $aisho_night );
@@ -514,19 +474,12 @@ else if ( is_readable( $self->get('event') .'/data/' .$self->get('menu_id') .'.p
 			}
 			// 結果テキスト
 			$result_menu_001 = [];
-			// $result_menu_001[1] = $result_001_01[$base['logic_27constellations_other']]; // 小メニュー1 推しの基本性格（サマリ）
 			$result_menu_001[1] = get_logic_result('result_001_01', $base['logic_27constellations_other']); // 小メニュー1 推しの基本性格（サマリ）
-			// $result_menu_001[2] = $result_001_02[$base['logic_27constellations_other']]; // 小メニュー2 推しの基本性格（本文）
 			$result_menu_001[2] = get_logic_result('result_001_02', $base['logic_27constellations_other']); // 小メニュー2 推しの基本性格（本文）
-			// $result_menu_001[3] = $result_001_03[$base['logic_27constellations_self']]; // 小メニュー3 あなたの基本性格（サマリ）
 			$result_menu_001[3] = get_logic_result('result_001_03', $base['logic_27constellations_self']); // 小メニュー3 あなたの基本性格（サマリ）
-			// $result_menu_001[4] = $result_001_04[$base['logic_27constellations_self']]; // 小メニュー4 あなたの基本性格（本文）
 			$result_menu_001[4] = get_logic_result('result_001_04', $base['logic_27constellations_self']); // 小メニュー4 あなたの基本性格（本文）
-			// $result_menu_001[5] = $result_001_05[$base['logic_hihou_self_other']]; // 小メニュー5 あなたと推しの基本相性（サマリ）
 			$result_menu_001[5] = get_logic_result('result_001_05', $base['logic_hihou_self_other']); // 小メニュー5 あなたと推しの基本相性（サマリ）
-			// $result_menu_001[6] = $result_001_06[$base['logic_hihou_self_other']]; // 小メニュー6 あなたと推しの基本相性（本文）
 			$result_menu_001[6] = get_logic_result('result_001_06', $base['logic_hihou_self_other']); // 小メニュー6 あなたと推しの基本相性（本文）
-			// $result_menu_001[7] = $result_001_07[$base['logic_hihou_self_other']]; // 小メニュー7 あなたと推しの基本相性（結果）
 			$result_menu_001[7] = get_logic_result('result_001_07', $base['logic_hihou_self_other']); // 小メニュー7 あなたと推しの基本相性（結果）
 			$free_list['result_001'] = $result_menu_001;
 			$SmartyObj->assign( 'free_list', $free_list );

@@ -4,6 +4,29 @@
  * 推しとあなたの相性診断
  */
 
+
+
+// 名前対応
+if( isset($_REQUEST['name_other']) ) {
+	if( $_REQUEST['name_other'] == '' ) {
+		$other_name = '推し';
+	} else {
+		$other_name = $_REQUEST['name_other'].'さん';
+	}
+} else {
+	$other_name = '推し';
+}
+
+if (isset($_REQUEST['name_self'])) {
+	if( $_REQUEST['name_self'] == '' ) {
+		$self_name = 'あなた';
+	} else {
+		$self_name = $_REQUEST['name_self'].'さん';
+	}
+} else {
+	$self_name = 'あなた';
+}
+
 // メニュー情報
 $menuData = array(
 	'menu_id'			 => 'oa_002',
@@ -38,9 +61,9 @@ $menuData = array(
 	'18_min_title' => '休日の予定や食べたいもの、どちらの意見が優先されがち？	',
 	'19_min_title' => '推しは今、どんな気持ちでいる？	',
 	'20_min_title' => '推しを今、悩ませているものは？	',
-	'21_min_title' => '推しがもらって嬉しいプレゼント',
-	'22_min_title' => '推しが言われると嬉しくなる言葉',
-	'23_min_title' => '推しとあなたの共通ポイント',
+	'21_min_title' => $other_name . 'がもらって嬉しいプレゼント',
+	'22_min_title' => $other_name . 'が言われると嬉しくなる言葉',
+	'23_min_title' => $other_name . 'と' . $self_name . 'の共通ポイント',
 );
 
 // 小メニューロジック
